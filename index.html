@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Pro Realty Pune • WhatsApp AI Demo</title>
+<style>
+:root{--wa:#111b21;--panel:#202c33;--chat:#0b141a;--incoming:#202c33;--out:#005c4b;--green:#00a884;--text:#e9edef;--muted:#8696a0;--btn:#233744;--blue:#53bdeb}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:#080d10;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text)}
+.app{height:100dvh;max-width:430px;margin:auto;background:var(--chat);display:flex;flex-direction:column;overflow:hidden;box-shadow:0 0 50px #000}
+.header{background:var(--panel);padding:calc(env(safe-area-inset-top) + 10px) 12px 10px;display:flex;align-items:center;gap:10px}
+.back{font-size:30px}.avatar{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#0d171c;border:1px solid #d8b16a;color:#d8b16a;font-weight:800;font-size:12px}
+.title{flex:1}.title b{display:block;font-size:16px}.title span{font-size:12px;color:#c3ccd1}.headicons{display:flex;gap:17px;font-size:19px}
+.demo{background:#182229;color:#aebac1;font-size:11px;text-align:center;padding:5px}
+.chat{flex:1;overflow:auto;padding:10px 8px 16px;background:
+linear-gradient(rgba(11,20,26,.97),rgba(11,20,26,.97)),
+radial-gradient(circle at 10px 10px,#28343a 1px,transparent 1.2px);background-size:auto,22px 22px}
+.date{text-align:center;margin:4px 0 12px}.date span{font-size:11px;background:#182229;color:#aebac1;border-radius:7px;padding:6px 10px}
+.row{display:flex;margin:5px 0}.in{justify-content:flex-start}.out{justify-content:flex-end}
+.bubble{max-width:87%;padding:8px 9px 6px;border-radius:8px;font-size:14px;line-height:1.38;white-space:pre-wrap;box-shadow:0 1px 1px #0005}
+.in .bubble{background:var(--incoming);border-top-left-radius:2px}.out .bubble{background:var(--out);border-top-right-radius:2px}
+.time{font-size:10px;color:#9cadb7;text-align:right;margin-top:3px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.action{background:var(--btn);border:0;color:var(--blue);border-radius:7px;padding:10px 7px;font-size:13px;font-weight:600;cursor:pointer}
+.action.wide{grid-column:1/-1}.action:active{transform:scale(.985);opacity:.9}
+.card{margin-top:8px;background:#152127;border-radius:9px;overflow:hidden;border:1px solid #2c3b42}
+.hero{height:120px;background:linear-gradient(135deg,#315f6b,#1b3137);display:flex;align-items:flex-end;padding:12px;font-size:18px;font-weight:800}
+.cbody{padding:10px}.ctitle{font-weight:800;font-size:15px}.meta{font-size:12px;color:#aebac1;margin-top:4px;line-height:1.45}
+.pdf{display:flex;align-items:center;gap:10px;background:#182229;border-radius:8px;padding:9px;margin-top:8px}.pdficon{width:36px;height:42px;border-radius:5px;background:#ef4444;display:grid;place-items:center;font-weight:800}.pdfname{font-size:13px}.pdfsub{font-size:11px;color:#8696a0;margin-top:2px}
+.typing{display:flex;gap:4px}.typing i{width:6px;height:6px;border-radius:50%;background:#91a2ab;animation:p 1.1s infinite}.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}@keyframes p{0%,80%,100%{opacity:.3}40%{opacity:1}}
+.composer{background:#0b141a;padding:8px 8px calc(env(safe-area-inset-bottom) + 8px);display:flex;align-items:center;gap:7px}
+.plus,.mic{font-size:24px;width:34px;text-align:center;color:#c9d2d7}.box{flex:1;background:var(--panel);border-radius:22px;display:flex;align-items:center;padding:0 12px}.box input{width:100%;border:0;outline:none;background:transparent;color:white;font-size:15px;padding:11px 0}
+.send{width:42px;height:42px;border:0;border-radius:50%;background:var(--green);color:white;font-size:18px;cursor:pointer}
+@media(min-width:700px){body{padding:18px}.app{height:860px;max-height:95vh;border-radius:28px;border:1px solid #26353b}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="back">‹</div>
+    <div class="avatar">PRO<br>REALTY</div>
+    <div class="title"><b>Pro Realty Pune</b><span>Business Account • online</span></div>
+    <div class="headicons"><span>☎</span><span>⋮</span></div>
+  </div>
+  <div class="demo">Interactive demo • sample property information only</div>
+  <div id="chat" class="chat"><div class="date"><span>TODAY</span></div></div>
+  <div class="composer">
+    <div class="plus">＋</div>
+    <div class="box"><input id="input" placeholder="Message"></div>
+    <button class="send" id="send">➤</button>
+  </div>
+</div>
+<script>
+const chat=document.getElementById('chat'), input=document.getElementById('input');
+let s={area:"",budget:"",bhk:"",project:""};
+const tm=()=>new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+function msg(text,who='in',html=false){const r=document.createElement('div');r.className='row '+who;const b=document.createElement('div');b.className='bubble';html?b.innerHTML=text:b.textContent=text;const t=document.createElement('div');t.className='time';t.textContent=tm();b.appendChild(t);r.appendChild(b);chat.appendChild(r);chat.scrollTop=chat.scrollHeight;return r}
+function wait(fn,ms=550){const r=msg('<span class="typing"><i></i><i></i><i></i></span>','in',true);setTimeout(()=>{r.remove();fn()},ms)}
+function opts(items){const w=document.createElement('div');w.className='actions';items.forEach(x=>{const b=document.createElement('button');b.className='action'+(x[2]?' wide':'');b.textContent=x[0];b.onclick=()=>{w.remove();msg(x[0],'out');wait(x[1])};w.appendChild(b)});const r=document.createElement('div');r.className='row in';const bb=document.createElement('div');bb.className='bubble';bb.appendChild(w);r.appendChild(bb);chat.appendChild(r);chat.scrollTop=chat.scrollHeight}
+function start(){
+ msg("👋 Hi! Welcome to Pro Realty Pune 🏠\n\nI’m your AI property assistant. I can help you:\n\n✅ Find matching projects\n✅ Check price range\n✅ Share brochures\n✅ Book a site visit\n✅ Request a callback");
+ wait(()=>{msg("What would you like to do today?");opts([
+ ["🏠 Buy a Home",area],["📄 View Projects",area],["📅 Book Site Visit",area],["☎ Talk to an Expert",lead]
+ ])});
+}
+function area(){msg("Great! Which area in Pune are you interested in?");opts([
+ ["Wakad",()=>setArea("Wakad")],["Hinjewadi",()=>setArea("Hinjewadi")],["Baner",()=>setArea("Baner")],["Kharadi",()=>setArea("Kharadi")],["Not sure",()=>setArea("Flexible"),true]
+])}
+function setArea(v){s.area=v;msg("What’s your budget range?");opts([
+ ["Below ₹50L",()=>setBudget("< ₹50L")],["₹50L–75L",()=>setBudget("₹50L–75L")],["₹75L–1Cr",()=>setBudget("₹75L–1Cr")],["₹1Cr+",()=>setBudget("₹1Cr+")],["Flexible",()=>setBudget("Flexible"),true]
+])}
+function setBudget(v){s.budget=v;msg("What type of home are you looking for?");opts([
+ ["2 BHK",()=>setBhk("2 BHK")],["3 BHK",()=>setBhk("3 BHK")],["Villa / Row House",()=>setBhk("Villa / Row House")],["Not sure",()=>setBhk("Flexible"),true]
+])}
+function setBhk(v){s.bhk=v;wait(show,700)}
+function show(){
+ msg(`Perfect 👍\nHere are sample matches for ${s.area}, ${s.budget}, ${s.bhk}.`);
+ const card=`<div class="card"><div class="hero">West Pune Residences</div><div class="cbody"><div class="ctitle">${s.bhk==="Flexible"?"2 & 3 BHK":s.bhk} • ${s.area==="Flexible"?"West Pune":s.area}</div><div class="meta">Sample listing • From ₹82L* • RERA details available in live setup*</div><div class="actions"><button class="action" onclick="brochure('West Pune Residences')">📄 Brochure</button><button class="action" onclick="visit('West Pune Residences')">📅 Site Visit</button><button class="action wide" onclick="details('West Pune Residences')">ⓘ More Details</button></div></div></div>`;
+ msg(card,'in',true);
+}
+function brochure(p){s.project=p;msg("📄 Send brochure",'out');wait(()=>{msg(`Here’s the brochure for ${p}.`);msg(`<div class="pdf"><div class="pdficon">PDF</div><div><div class="pdfname">Pro_Realty_Project_Brochure.pdf</div><div class="pdfsub">2.8 MB • Sample brochure</div></div></div>`,'in',true);opts([["📅 Book Site Visit",()=>visit(p)],["☎ Talk to Expert",lead],["🔎 Explore More",area]])})}
+function details(p){msg(`🏙 ${p}\n\n• Location: ${s.area||"Pune"}\n• Configuration: ${s.bhk||"2 & 3 BHK"}\n• Budget fit: ${s.budget||"Flexible"}\n• Amenities, floor plans and live availability can be connected to Pro Realty’s project database.`);opts([["📄 Get Brochure",()=>brochure(p)],["📅 Book Site Visit",()=>visit(p)]])}
+function visit(p){s.project=p;msg(`Sure 👍 Which day would you prefer for a visit to ${p}?`);opts([
+ ["Today",()=>time("Today")],["Tomorrow",()=>time("Tomorrow")],["This Weekend",()=>time("This Weekend"),true]
+])}
+function time(day){msg(`What time works best on ${day}?`);opts([
+ ["11 AM–1 PM",()=>confirmVisit(day,"11 AM–1 PM")],["2–4 PM",()=>confirmVisit(day,"2–4 PM")],["5–7 PM",()=>confirmVisit(day,"5–7 PM"),true]
+])}
+function confirmVisit(day,time){msg(`✅ Site visit request created.\n\nProject: ${s.project||"Selected Project"}\nArea: ${s.area||"Pune"}\nBudget: ${s.budget||"Not specified"}\nPreference: ${s.bhk||"Not specified"}\nVisit: ${day}, ${time}\n\nIn the live WhatsApp version, this qualified lead can be sent instantly to the Pro Realty sales team.`);opts([["☎ Request Callback",lead],["↻ Start Again",()=>location.reload()]])}
+function lead(){msg("Perfect. In the live version I’ll capture the buyer’s name + WhatsApp number automatically and notify the assigned sales executive with the full requirement.");opts([["📅 Book Sample Visit",()=>visit("Selected Project")],["↻ Start Again",()=>location.reload()]])}
+function send(){const v=input.value.trim();if(!v)return;msg(v,'out');input.value="";wait(()=>{const q=v.toLowerCase();if(q.includes("brochure"))brochure(s.project||"Selected Project");else if(q.includes("visit"))visit(s.project||"Selected Project");else if(q.includes("price")||q.includes("budget"))msg("Tell me your maximum budget and preferred Pune area. I’ll shortlist matching projects.");else if(q.includes("wakad")||q.includes("baner")||q.includes("kharadi")||q.includes("hinjewadi")){s.area=v;msg("Great location choice. What’s your budget range?");opts([["₹50L–75L",()=>setBudget("₹50L–75L")],["₹75L–1Cr",()=>setBudget("₹75L–1Cr")],["₹1Cr+",()=>setBudget("₹1Cr+")]])}else msg("Got it 👍 For this demo, try asking for a brochure, price, Pune area, or site visit.")})}
+document.getElementById('send').onclick=send;input.addEventListener('keydown',e=>e.key==="Enter"&&send());start();
+</script>
+</body>
+</html>
